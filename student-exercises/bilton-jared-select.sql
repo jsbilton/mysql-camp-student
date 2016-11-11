@@ -201,7 +201,7 @@ INNER JOIN batting ON team.ID = batting.ID
 ORDER BY BattingAvg DESC;
 
 
-
+-- incomplete
 SELECT FirstName
 , LastName
 , teamName
@@ -287,3 +287,207 @@ GROUP BY Position;
 SELECT Position, COUNT (playerID) as PositionCount
 from vteamRoster
 GROUP BY Position;
+
+
+
+-- Exercise: HAVING
+
+-- Create three select statements that use the GROUP BY and HAVING clause. Use any table or view from any of the databases created to this point. Feel free to create your own database and tables with data, if you desire.
+
+SELECT player.FirstName
+, player.LastName
+, player.BirthplaceCity
+, player.BirthplaceCountry
+, player.BirthplaceState
+FROM player
+WHERE BirthplaceCity = 'N'
+GROUP BY BirthplaceCity;
+
+
+
+-- Exercise: Add individuals to a band
+
+
+
+-- Exercise: More than one way to INSERT INTO
+INSERT INTO Individual
+(LastName, FirstName, BirthDate, DateAdded, DeceasedDate)
+VALUES
+('Marcus', 'King', '1996-09-12', NOW(), NULL)
+, ('Stapleton','Chris','1972-11-10', NOW(), NULL)
+, ('McKernan', 'Ron', '1945-09-08', NOW(),'1973-03-08');
+
+INSERT INTO Band
+(Name, YearFormed, IsTogether, Genre)
+VALUES
+('Grateful Dead', '1965', 0, 'Rock')
+, ('Marcus Kind Band', '2014', 1, 'Rock')
+, ('The Steeldrivers', '2007', 1, 'Bluegrass');
+
+INSERT INTO
+IndividualBand (BandID, IndividualID)
+Values (24,51), (25,49), (26,50);
+
+
+-- INSERT INTO SELECT
+INSERT INTO Individual
+(LastName,
+FirstName,
+BirthDate,
+DeceasedDate)
+VALUES
+('Allman', 'Duane', '1946-11-20', '1971-10-29');
+
+-- DELETE
+-- Exercise: Using the DELETE statement
+
+
+SELECT * FROM Individual
+WHERE FirstName = 'Dee Dee';
+
+DELETE FROM Individual
+WHERE ID = '55';
+
+SELECT ID, FirstName, LastName
+FROM Individual
+WHERE LastName IN ('Ramone', 'Jennings', 'Presley');
+
+DELETE
+FROM Individual
+WHERE LastName IN ('Ramone', 'Jennings', 'Presley');
+
+SHOW Tables FROM RockStarDay2;
+SHOW COLUMNS FROM IndividualBand;
+SHOW CREATE TABLE IndividualBand;
+
+
+-- UPDATE
+-- Exercise: UPDATE Statement
+
+-- UPDATE <table_name>
+-- SET <column_name> = {expression}
+-- WHERE <where_condition>
+
+SELECT * FROM Band;
+
+--this no work
+UPDATE Band
+SET Era ENUM('Classic', 'Modern');
+
+
+
+SELECT * FROM Band WHERE YearFormed <= 1970;
+
+-- DISTINCT
+
+SELECT * FROM Band;
+
+SELECT DISTINCT Genre FROM Band;
+
+SELECT DISTINCT YearFormed, Genre FROM Band;
+
+SELECT DISTINCT YearFormed FROM Band;
+
+SELECT DISTINCT IsTogether FROM Band;
+
+-- SELECT DISTINCT ID, Genre, Name FROM BandMembers;
+
+SELECT DISTINCT Genre, Name FROM BandMembers;
+
+
+-- Aliases
+
+
+SELECT LastName, FirstName, CONCAT(FirstName, '', LastName) AS FullName
+FROM BandMembers;
+
+
+SELECT Genre, count(Genre) as CNT
+FROM BandMembers
+GROUP BY Genre
+HAVING CNT > 1;
+
+
+-- Exercise: Aliases
+
+SELECT LastName, FirstName, CONCAT(FirstName, '', LastName) AS FullName
+FROM BandMembers;
+
+SELECT LastName, FirstName, YEAR(BirthDate) as BirthYear FROM BandMembers;
+
+
+
+
+-- Relief Stuff
+
+CREATE TABLE person (
+  ID INT NOT NULL PRIMARY KEY UNSIGNED AUTO_INCREMENT
+  , LastName varchar(50) NOT NULL
+  , FirstName varchar(25) NOT NULL
+  , email varchar(50) NOT NULL UNIQUE
+  , phone INT(12) UNSIGNED NOT NULL
+  , active NOT NULL TINYINT(1);
+
+
+  ReliefTeam
+
+  Relief
+  ID INT PRIMARY KEY UNSIGNED AUTO_INCREMENT NOT NULL
+  Name VARCHAR NOT NULL
+  OrgID NOT NULL
+  DESC NOT NULL
+  Start DATE
+  End DATE
+  Phase ENUM('planning', 'active', 'completed')
+
+--------------------------------------------------------------------
+INSERT INTO person
+(LastName, FirstName, email, phone, active)
+
+
+INSERT INTO relief
+(name, organizationID, description, start, end, phase)
+
+INSERT INTO reliefTeam
+(personID, reliefID, role)
+
+
+CREATE TABLE reliefTeam (
+  ID int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  personID int(11) UNSIGNED NOT NULL,
+  reliefID int(11) UNSIGNED NOT NULL,
+  role enum('Team Leader','Team Member') COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (ID),
+  UNIQUE KEY UI_reliefTeam_personID_reliefID (personID,reliefID),
+  KEY FK_reliefTeam_person_idx (personID),
+  KEY FK_reliefTeam_relief_idx (reliefID),
+  CONSTRAINT FK_reliefTeam_person FOREIGN KEY (personID) REFERENCES person (ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT FK_reliefTeam_relief FOREIGN KEY (reliefID) REFERENCES relief (ID) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+
+
+
+
+"name": "Haiti Hurricane Mateo 2016",
+"organizationID": "
+"team": [
+    {
+        "name": "Steve Harvey",
+        "role": "Team Leader",
+        "personID": "person_steveharvey1111@gmail.com"
+    },
+    {
+        "name": "Libby Satterfield",
+        "role": "Team member",
+        "personID": "person_lsat1972@gmail.com"
+    },
+    {
+        "name": "Jimmy Martin",
+        "role": "Team member",
+        "personID": "person_JimmyMartinJr@gmail.com"
+    }
+],
+"active": true,
+"type": "relief"
+}
